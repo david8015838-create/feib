@@ -11,7 +11,7 @@ export default function Header() {
       <header className="sticky top-0 z-40 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-stone-200 dark:border-stone-800">
         <div className="flex items-center gap-3">
           <h2 className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">
-            FEIB AI Pilot
+            遠東商銀ＡＩ智能刷卡推薦（OWEN)
           </h2>
         </div>
         <div className="flex items-center gap-2">

@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "FEIB AI Pilot Shopping Navigator",
+  title: "遠東商銀ＡＩ智能刷卡推薦（OWEN)",
   description: "遠東商銀 AI 智策助手",
   manifest: "/feib/manifest.json",
 };

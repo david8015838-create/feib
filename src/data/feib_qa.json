@@ -1,0 +1,59 @@
+{
+  "qa_knowledge": [
+    {
+      "category": "信用卡服務",
+      "items": [
+        {
+          "question": "信用卡掛失",
+          "answer": "請立即致電遠東商銀客服中心辦理掛失。國內請撥打：(02) 8073-1166；國外請撥打：886-2-8073-1166。掛失手續費每卡新臺幣 200 元。",
+          "url": "https://www.feib.com.tw/contactUs"
+        },
+        {
+          "question": "客服電話",
+          "answer": "遠東商銀信用卡客服專線：(02) 8073-1166。Bankee 數位帳戶專線：(02) 8073-1166。",
+          "url": "https://www.feib.com.tw/contactUs"
+        },
+        {
+          "question": "帳單分期",
+          "answer": "「帳單分期」可將當期信用卡帳單金額分期繳納。需於繳款截止日前 2 個營業日申請。分期期數與利率依個人信用狀況而定，詳細利率請參考當期帳單或官網公告。",
+          "url": "https://www.feib.com.tw/"
+        },
+        {
+          "question": "循環利率",
+          "answer": "遠東商銀信用卡循環信用利率為 6.74% ~ 14.99% (依本行信用評分制度定期評估)。",
+          "url": "https://www.feib.com.tw/"
+        }
+      ]
+    },
+    {
+      "category": "數位帳戶 (Bankee)",
+      "items": [
+        {
+          "question": "Bankee 活存利率",
+          "answer": "Bankee 數位帳戶基本利率 1.435% 無上限。成功推薦 1 人開戶，享半年內 5 萬元額度 2.6% 優利。",
+          "url": "https://www.bankee.com.tw/"
+        },
+        {
+          "question": "跨行轉帳優惠",
+          "answer": "Bankee 數位帳戶每月享 6 次跨行轉帳免手續費、6 次跨行提款免手續費。",
+          "url": "https://www.bankee.com.tw/"
+        }
+      ]
+    },
+    {
+      "category": "繳費與稅款",
+      "items": [
+        {
+          "question": "繳費方式",
+          "answer": "可透過遠銀行動銀行 APP、網路銀行、自動扣繳 (推薦)、全台 7-11/全家/萊爾富/OK 超商繳款 (需持帳單)、或至遠東商銀分行臨櫃繳款。",
+          "url": "https://www.feib.com.tw/"
+        },
+        {
+          "question": "違約金",
+          "answer": "若未於繳款截止日前繳足最低應繳金額，將產生違約金。當期帳單違約金計算方式：違約金 = (最低應繳金額 - 已繳金額) 之一定比例，最高連續收取 3 期。",
+          "url": "https://www.feib.com.tw/"
+        }
+      ]
+    }
+  ]
+}

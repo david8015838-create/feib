@@ -3,10 +3,10 @@
 import { useState } from "react";
 import Header from "@/components/Header";
 import ShoppingNavigator from "@/components/ShoppingNavigator";
-import BankeeSimulator from "@/components/BankeeSimulator";
+import FeibQA from "@/components/FeibQA";
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<'navigator' | 'bankee'>('navigator');
+  const [activeTab, setActiveTab] = useState<'navigator' | 'qa'>('navigator');
 
   return (
     <>
@@ -38,30 +38,30 @@ export default function Home() {
           </button>
           
           <button
-            onClick={() => setActiveTab('bankee')}
+            onClick={() => setActiveTab('qa')}
             className={`flex flex-col items-center justify-center border-b-[3px] gap-2 pb-3 pt-4 flex-1 transition-all ${
-              activeTab === 'bankee'
+              activeTab === 'qa'
                 ? 'border-primary text-slate-900 dark:text-slate-100'
                 : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
             }`}
           >
             <span
               className={`material-symbols-outlined ${
-                activeTab === 'bankee' ? 'text-primary' : ''
+                activeTab === 'qa' ? 'text-primary' : ''
               }`}
-              style={{ fontVariationSettings: activeTab === 'bankee' ? "'FILL' 1" : "'FILL' 0" }}
+              style={{ fontVariationSettings: activeTab === 'qa' ? "'FILL' 1" : "'FILL' 0" }}
             >
-              group
+              support_agent
             </span>
-            <span className={`text-sm font-bold tracking-wide ${activeTab === 'bankee' ? '' : 'font-medium'}`}>
-              Bankee 社群管家
+            <span className={`text-sm font-bold tracking-wide ${activeTab === 'qa' ? '' : 'font-medium'}`}>
+              智能 QA 客服
             </span>
           </button>
         </div>
 
         {/* Content */}
         <div className="animate-in fade-in zoom-in-95 duration-300">
-          {activeTab === 'navigator' ? <ShoppingNavigator /> : <BankeeSimulator />}
+          {activeTab === 'navigator' ? <ShoppingNavigator /> : <FeibQA />}
         </div>
       </main>
 
@@ -83,16 +83,16 @@ export default function Home() {
         </a>
         <a 
           className="flex flex-col items-center gap-1 p-2 group cursor-pointer w-24"
-          onClick={() => setActiveTab('bankee')}
+          onClick={() => setActiveTab('qa')}
         >
           <span 
-            className={`material-symbols-outlined transition-colors ${activeTab === 'bankee' ? 'text-primary' : 'text-stone-400 group-hover:text-primary'}`}
-            style={{ fontVariationSettings: activeTab === 'bankee' ? "'FILL' 1" : "'FILL' 0" }}
+            className={`material-symbols-outlined transition-colors ${activeTab === 'qa' ? 'text-primary' : 'text-stone-400 group-hover:text-primary'}`}
+            style={{ fontVariationSettings: activeTab === 'qa' ? "'FILL' 1" : "'FILL' 0" }}
           >
-            group
+            support_agent
           </span>
-          <span className={`text-[10px] font-medium transition-colors ${activeTab === 'bankee' ? 'text-primary' : 'text-stone-400 group-hover:text-primary'}`}>
-            Bankee
+          <span className={`text-[10px] font-medium transition-colors ${activeTab === 'qa' ? 'text-primary' : 'text-stone-400 group-hover:text-primary'}`}>
+            智能客服
           </span>
         </a>
       </nav>

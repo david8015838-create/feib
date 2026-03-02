@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import feibRules from "@/data/feib_rules.json";
+import { findLocalRecommendation } from "@/utils/localRules";
+import { ModelRotator } from "@/utils/modelRotator";
 
 export default function ShoppingNavigator() {
   const [store, setStore] = useState("遠東百貨信義A13");
@@ -12,6 +13,22 @@ export default function ShoppingNavigator() {
   const [error, setError] = useState("");
 
   const handleCalculate = async () => {
+    // 1. 優先檢查本地規則 (不消耗 API Key)
+    const localRec = findLocalRecommendation(store);
+    if (localRec) {
+      setResult({
+        recommended_card: localRec.card,
+        feedback_amount: Math.round(amount * (parseFloat(localRec.rate) / 100)),
+        feedback_rate: localRec.rate,
+        reason: localRec.reason,
+        details: localRec.details,
+        official_url: localRec.url
+      });
+      setError("");
+      return;
+    }
+
+    // 2. 若無本地規則，則使用 API
     const apiKey = localStorage.getItem("gemini_api_key");
     if (!apiKey) {
       setError("請先在設定中輸入 Gemini API Key");
@@ -23,9 +40,7 @@ export default function ShoppingNavigator() {
     setResult(null);
 
     try {
-      const genAI = new GoogleGenerativeAI(apiKey);
-      // Update to 2026 latest model: Gemini 2.5 Flash
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const rotator = new ModelRotator(apiKey);
 
       const prompt = `
         你是一個遠東商銀 AI 智策助手。
@@ -56,14 +71,12 @@ export default function ShoppingNavigator() {
         請只回傳 JSON 字串，不要有 markdown 標記。
       `;
 
-      const result = await model.generateContent(prompt);
-      const response = result.response;
-      let text = response.text();
+      const text = await rotator.generateContent(prompt);
       
       // Remove markdown code blocks if present
-      text = text.replace(/```json/g, "").replace(/```/g, "").trim();
+      const cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
       
-      const data = JSON.parse(text);
+      const data = JSON.parse(cleanText);
       setResult(data);
     } catch (err: any) {
       console.error(err);
