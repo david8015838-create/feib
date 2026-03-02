@@ -1,12 +1,18 @@
+export interface LocalRecommendation {
+  card: string;
+  rate: string;
+  reason: string;
+  details: string;
+  url: string;
+  feedbackAmount?: number;
+  feedbackRate?: string;
+}
+
 export interface LocalRule {
   keywords: string[];
-  recommendation: {
-    card: string;
-    rate: string;
-    reason: string;
-    details: string;
-    url: string;
-  };
+  minAmount?: number;
+  recommendation?: LocalRecommendation;
+  calculate?: (input: string, amount: number) => LocalRecommendation;
 }
 
 export const localRules: LocalRule[] = [
@@ -82,6 +88,34 @@ export const localRules: LocalRule[] = [
   },
   {
     keywords: ["海外", "日本", "韓國", "國外", "美金", "日幣", "歐元"],
+    minAmount: 20000,
+    calculate: (input, amount) => {
+      const base = amount * 0.015;
+      const bonusTimes = Math.floor(amount / 25000);
+      const bonus = bonusTimes * 500;
+      const isJapanOrKorea = input.includes("日本") || input.includes("韓國");
+      const countryBonus = isJapanOrKorea && amount >= 50000 ? 500 : 0;
+      const total = Math.round(base + bonus + countryBonus);
+      const rate = ((total / amount) * 100).toFixed(2);
+      const detailsParts = [
+        `基本海外 1.5% (${Math.round(base)} 元)`,
+        `每滿 2.5 萬加碼 ${bonus} 元`,
+        countryBonus > 0 ? "指定國家加碼 500 元" : null,
+        "Bankee 3% 需數位帳戶月均餘額 60 萬 (未達則 0.15%)"
+      ].filter(Boolean);
+      return {
+        card: "遠東頂級快樂卡",
+        rate: `${rate}%`,
+        reason: "大額海外消費以滿額禮加碼回饋更高，且無 60 萬存款門檻",
+        details: detailsParts.join("；"),
+        url: "https://www.feib.com.tw/upload/creditcard/HappyCardinfinite/index.html",
+        feedbackAmount: total,
+        feedbackRate: `${rate}%`
+      };
+    }
+  },
+  {
+    keywords: ["海外", "日本", "韓國", "國外", "美金", "日幣", "歐元"],
     recommendation: {
       card: "Bankee 信用卡",
       rate: "3%",
@@ -112,10 +146,22 @@ export const localRules: LocalRule[] = [
   }
 ];
 
-export function findLocalRecommendation(input: string): LocalRule["recommendation"] | null {
+export function findLocalRecommendation(input: string, amount?: number): LocalRecommendation | null {
   const normalizedInput = input.toLowerCase();
   for (const rule of localRules) {
-    if (rule.keywords.some(keyword => normalizedInput.includes(keyword.toLowerCase()))) {
+    const matchesKeyword = rule.keywords.some(keyword =>
+      normalizedInput.includes(keyword.toLowerCase())
+    );
+    if (!matchesKeyword) {
+      continue;
+    }
+    if (rule.minAmount !== undefined && amount !== undefined && amount < rule.minAmount) {
+      continue;
+    }
+    if (rule.calculate && amount !== undefined) {
+      return rule.calculate(input, amount);
+    }
+    if (rule.recommendation) {
       return rule.recommendation;
     }
   }

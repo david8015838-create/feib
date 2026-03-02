@@ -14,12 +14,15 @@ export default function ShoppingNavigator() {
 
   const handleCalculate = async () => {
     // 1. 優先檢查本地規則 (不消耗 API Key)
-    const localRec = findLocalRecommendation(store);
+    const localRec = findLocalRecommendation(store, amount);
     if (localRec) {
+      const feedbackAmount =
+        localRec.feedbackAmount ?? Math.round(amount * (parseFloat(localRec.rate) / 100));
+      const feedbackRate = localRec.feedbackRate ?? localRec.rate;
       setResult({
         recommended_card: localRec.card,
-        feedback_amount: Math.round(amount * (parseFloat(localRec.rate) / 100)),
-        feedback_rate: localRec.rate,
+        feedback_amount: feedbackAmount,
+        feedback_rate: feedbackRate,
         reason: localRec.reason,
         details: localRec.details,
         official_url: localRec.url
