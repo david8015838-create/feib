@@ -1,0 +1,124 @@
+{
+  "cards": [
+    {
+      "name": "遠東樂家+卡",
+      "expiry": "2026/06/30",
+      "best_for": "家庭生活、寵物、超市加油",
+      "scenarios": [
+        {
+          "context": "寵物店或動物醫院消費",
+          "rate": "10%",
+          "logic": "基本 0.5% + 寵物加碼 9.5% (上限 500 元/月)"
+        },
+        {
+          "context": "超市量販 (愛買/全聯/家樂福)、加油、電信費",
+          "rate": "4% - 5%",
+          "logic": "需一般消費滿 3,000 元且遠銀帳戶自動扣繳。基本 0.5% + 指定 3.5~4.5% (上限 300~500 元/月)"
+        },
+        {
+          "context": "國內指定餐廳、影院、購物中心",
+          "rate": "4%",
+          "logic": "基本 0.5% + 大小安心刷加碼 3.5% (上限 200 元/月)"
+        }
+      ],
+      "channels": ["寵物公園", "東森寵物", "魚中魚", "動物醫院", "愛買", "全聯", "家樂福", "加油站", "電信代扣", "國內餐廳", "遠東百貨"],
+      "url": "https://www.feib.com.tw/YACard"
+    },
+    {
+      "name": "遠東快樂信用卡",
+      "expiry": "2026/06/30",
+      "best_for": "行動支付 (LINE Pay)、百貨網購、自動加值",
+      "scenarios": [
+        {
+          "context": "綁定 LINE Pay 支付",
+          "rate": "5%",
+          "logic": "需每月登錄 (限1萬名)。5% 刷卡金回饋 (上限 300 元/月)"
+        },
+        {
+          "context": "悠遊卡自動加值",
+          "rate": "5% - 15%",
+          "logic": "需登錄。快樂卡 5% + JCB 晶緻卡額外 10% (需每月 1 日搶登)"
+        },
+        {
+          "context": "指定網購 (momo/PChome/蝦皮/酷澎)、咖啡 (星巴克/路易莎)",
+          "rate": "5%",
+          "logic": "需每月登錄。5% 刷卡金回饋 (上限 300 元/月)"
+        },
+        {
+          "context": "遠東集團通路 (SOGO/遠百/愛買)",
+          "rate": "HAPPY GO 2-3倍",
+          "logic": "每 100 元贈 1 點，特店 2 倍，指定門檻 3 倍。4 點折 1 元 (約 0.5%~0.75%)"
+        }
+      ],
+      "channels": ["LINE Pay", "momo", "PChome", "蝦皮", "酷澎", "星巴克", "路易莎", "UNIQLO", "SOGO", "遠東百貨", "悠遊卡加值"],
+      "url": "https://www.feib.com.tw/upload/creditcard/HappyCardRed/index.html"
+    },
+    {
+      "name": "遠東樂行卡",
+      "expiry": "2026/12/31",
+      "best_for": "通勤族、交通加油、稅款代繳",
+      "scenarios": [
+        {
+          "context": "交通/通勤 (機票、高鐵、eTag、加油)",
+          "rate": "3%",
+          "logic": "需一般消費滿 3,000 元且登錄。3% 刷卡金回饋 (上限 300 元/月)"
+        },
+        {
+          "context": "一般消費 / 稅款代繳",
+          "rate": "0.5%",
+          "logic": "一般消費 0.5% 回饋無上限。稅款代繳享 0.5% 回饋 (需登錄)"
+        }
+      ],
+      "channels": ["高鐵", "台鐵", "機票", "加油站", "eTag儲值", "各項稅款"],
+      "url": "https://www.feib.com.tw/upload/creditcard/HWCard/index.html"
+    },
+    {
+      "name": "Bankee 信用卡",
+      "expiry": "2026 常駐",
+      "best_for": "無腦刷、海外高回饋",
+      "scenarios": [
+        {
+          "context": "國內一般消費 (無腦刷)",
+          "rate": "1.2%",
+          "logic": "無上限。需 Bankee 數位帳戶月均餘額達 60 萬 (未達則為 0.15%)"
+        },
+        {
+          "context": "海外消費 (含網購)",
+          "rate": "3%",
+          "logic": "無上限。需 Bankee 數位帳戶月均餘額達 60 萬 (未達則為 0.15%)"
+        }
+      ],
+      "channels": ["國內一般消費", "海外購物", "亞馬遜", "淘寶"],
+      "url": "https://www.bankee.com.tw/"
+    },
+    {
+      "name": "C'est Moi 旅遊悠遊卡 (我的卡)",
+      "expiry": "2026 常駐",
+      "best_for": "百貨常客、累積 HAPPY GO",
+      "scenarios": [
+        {
+          "context": "指定百貨 (SOGO/遠百/巨城)",
+          "rate": "HAPPY GO 4倍",
+          "logic": "無上限。每 100 元贈 4 點 (約 1% 回饋)"
+        },
+        {
+          "context": "旅遊/海外消費",
+          "rate": "HAPPY GO 3倍",
+          "logic": "每月消費滿 5,000 元。每 100 元贈 3 點 (約 0.75% 回饋)"
+        }
+      ],
+      "channels": ["SOGO", "遠東百貨", "巨城購物中心", "friDay購物", "機票", "飯店", "海外消費"],
+      "url": "https://www.feib.com.tw/detail?id=414"
+    }
+  ],
+  "bank_account": {
+    "name": "Bankee 數位帳戶",
+    "expiry": "2026 常駐",
+    "base_rate": 0.01435,
+    "bonus_rate": 0.026,
+    "bonus_condition": "成功推薦 1 人即享 2.6% 優利",
+    "bonus_limit": 50000,
+    "bonus_duration_months": 6,
+    "url": "https://www.bankee.com.tw/event/adDepo/index.html"
+  }
+}
