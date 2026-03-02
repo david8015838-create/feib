@@ -72,6 +72,13 @@ export default function ShoppingNavigator() {
            - reason (字串): 推薦理由 (需包含綁定方式，例如：「建議使用 LINE Pay 綁定此卡支付，可享最高 5% 回饋」)
            - details (字串): 計算細節與門檻提醒 (例如 "LINE Pay 5% (需每月登錄，上限300元)")
            - official_url (字串): 對應的官網連結
+           - isBlackhole (布林值): 若該通路直接刷卡無回饋，請設為 true
+           - suggestedCombination (物件): 若為黑洞通路，請提供最佳路徑組合
+             - card (字串): "遠東快樂信用卡"
+             - payment (字串): "LINE Pay"
+             - rate (字串): "5%"
+             - amount (數字): 計算出的 5% 回饋金額
+             - warning (字串): "實體刷卡無回饋。請綁定 LINE Pay 支付，並確保已完成每月活動登錄（限 1 萬名）。"
            
         請只回傳 JSON 字串，不要有 markdown 標記。
       `;
@@ -157,78 +164,129 @@ export default function ShoppingNavigator() {
 
       {/* Results Card */}
       {result && (
-        <div className="bg-gradient-to-br from-white to-stone-50 dark:from-surface-dark dark:to-[#3a2020] rounded-2xl p-0.5 shadow-lg border border-stone-200 dark:border-stone-800 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <div className="bg-white dark:bg-surface-dark rounded-[14px] p-5 h-full">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary">
-                  recommend
+        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="bg-gradient-to-br from-white to-stone-50 dark:from-surface-dark dark:to-[#3a2020] rounded-2xl p-0.5 shadow-lg border border-stone-200 dark:border-stone-800 overflow-hidden">
+            <div className="bg-white dark:bg-surface-dark rounded-[14px] p-5 h-full">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <span className="material-symbols-outlined text-primary">
+                    recommend
+                  </span>
+                  推薦卡片
+                </h3>
+                <span className="inline-flex items-center gap-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider border border-green-200 dark:border-green-800">
+                  <span className="material-symbols-outlined text-[14px]">
+                    verified
+                  </span>
+                  來源已驗證
                 </span>
-                推薦卡片
-              </h3>
-              <span className="inline-flex items-center gap-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider border border-green-200 dark:border-green-800">
-                <span className="material-symbols-outlined text-[14px]">
-                  verified
-                </span>
-                來源已驗證
-              </span>
-            </div>
-            <div className="flex items-center gap-4 mb-5">
-              <div className="w-16 h-10 rounded bg-gradient-to-r from-primary to-primary-dark shadow-md relative overflow-hidden flex-shrink-0 flex items-center justify-center">
-                <div className="absolute inset-0 bg-white/10 skew-x-12"></div>
-                <span className="text-white text-[10px] font-bold">FEIB</span>
               </div>
-              <div>
-                <h4 className="font-bold text-slate-900 dark:text-white leading-tight">
-                  {result.recommended_card}
-                </h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  {result.reason}
-                </p>
-              </div>
-            </div>
-            <div className="bg-primary/5 dark:bg-primary/10 rounded-xl p-4 border border-primary/10 dark:border-primary/20">
-              <div className="flex justify-between items-end">
+              <div className="flex items-center gap-4 mb-5">
+                <div className={`w-16 h-10 rounded shadow-md relative overflow-hidden flex-shrink-0 flex items-center justify-center ${result.isBlackhole ? 'bg-slate-200 dark:bg-slate-800' : 'bg-gradient-to-r from-primary to-primary-dark'}`}>
+                  <div className="absolute inset-0 bg-white/10 skew-x-12"></div>
+                  <span className={`${result.isBlackhole ? 'text-slate-500' : 'text-white'} text-[10px] font-bold`}>FEIB</span>
+                </div>
                 <div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mb-1">
-                    預估現金回饋
+                  <h4 className={`font-bold leading-tight ${result.isBlackhole ? 'text-slate-500' : 'text-slate-900 dark:text-white'}`}>
+                    {result.recommended_card}
+                  </h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    {result.reason}
                   </p>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-extrabold text-primary font-display">
-                      {result.feedback_amount}
-                    </span>
-                    <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
-                      元
+                </div>
+              </div>
+              <div className={`${result.isBlackhole ? 'bg-slate-50 dark:bg-slate-900/50 border-slate-200' : 'bg-primary/5 dark:bg-primary/10 border-primary/10'} rounded-xl p-4 border dark:border-primary/20`}>
+                <div className="flex justify-between items-end">
+                  <div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mb-1">
+                      預估現金回饋
+                    </p>
+                    <div className="flex items-baseline gap-1">
+                      <span className={`text-2xl font-extrabold font-display ${result.isBlackhole ? 'text-slate-400' : 'text-primary'}`}>
+                        {result.feedback_amount}
+                      </span>
+                      <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                        元
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mb-1">
+                      回饋率
+                    </p>
+                    <span className={`text-lg font-bold ${result.isBlackhole ? 'text-slate-400' : 'text-slate-900 dark:text-white'}`}>
+                      {result.feedback_rate}
                     </span>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mb-1">
-                    回饋率
-                  </p>
-                  <span className="text-lg font-bold text-slate-900 dark:text-white">
-                    {result.feedback_rate}
+                <div className="mt-3 pt-3 border-t border-primary/10 dark:border-primary/20 flex flex-wrap gap-2">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-white dark:bg-black/20 text-slate-600 dark:text-slate-300 border border-stone-200 dark:border-stone-700">
+                    {result.details}
                   </span>
                 </div>
+                {result.official_url && (
+                  <a
+                    href={result.official_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-4 w-full flex items-center justify-center gap-1 text-xs font-bold text-primary hover:text-primary-dark transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">
+                      search
+                    </span>
+                    驗證官網數據
+                  </a>
+                )}
               </div>
-              <div className="mt-3 pt-3 border-t border-primary/10 dark:border-primary/20 flex flex-wrap gap-2">
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-white dark:bg-black/20 text-slate-600 dark:text-slate-300 border border-stone-200 dark:border-stone-700">
-                  {result.details}
-                </span>
-              </div>
-              <a
-                href={result.official_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 w-full flex items-center justify-center gap-1 text-xs font-bold text-primary hover:text-primary-dark transition-colors"
-              >
-                <span className="material-symbols-outlined text-[16px]">
-                  search
-                </span>
-                驗證官網數據
-              </a>
             </div>
           </div>
+
+          {/* 最佳路徑 / 建議支付組合 */}
+          {result.suggestedCombination && (
+            <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10 rounded-2xl p-5 border border-amber-200 dark:border-amber-800 shadow-sm animate-in zoom-in-95 duration-500 delay-150">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="material-symbols-outlined text-amber-600 dark:text-amber-400">
+                  auto_awesome
+                </span>
+                <h3 className="text-base font-bold text-amber-900 dark:text-amber-200">
+                  最佳路徑：建議支付組合
+                </h3>
+              </div>
+              
+              <div className="flex items-start gap-4">
+                <div className="flex-1 space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="px-3 py-1.5 bg-white dark:bg-black/40 rounded-lg border border-amber-200 dark:border-amber-700 shadow-sm">
+                      <p className="text-[10px] font-bold text-amber-600 dark:text-amber-500 uppercase tracking-wider mb-0.5">推薦卡片</p>
+                      <p className="text-sm font-bold text-slate-900 dark:text-white">{result.suggestedCombination.card}</p>
+                    </div>
+                    <span className="material-symbols-outlined text-amber-400 text-sm">add</span>
+                    <div className="px-3 py-1.5 bg-white dark:bg-black/40 rounded-lg border border-amber-200 dark:border-amber-700 shadow-sm">
+                      <p className="text-[10px] font-bold text-amber-600 dark:text-amber-500 uppercase tracking-wider mb-0.5">支付方式</p>
+                      <p className="text-sm font-bold text-slate-900 dark:text-white">{result.suggestedCombination.payment}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white/60 dark:bg-black/20 rounded-xl p-3 border border-amber-100 dark:border-amber-900/50">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-bold text-amber-800 dark:text-amber-300">預期回饋</span>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-xl font-extrabold text-amber-600 font-display">{result.suggestedCombination.amount}</span>
+                        <span className="text-xs font-bold text-amber-800">元 ({result.suggestedCombination.rate})</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-2 bg-amber-100/50 dark:bg-amber-900/30 p-2.5 rounded-lg border border-amber-200/50 dark:border-amber-800/50">
+                    <span className="material-symbols-outlined text-amber-600 dark:text-amber-400 text-[16px] mt-0.5">info</span>
+                    <p className="text-[11px] leading-relaxed text-amber-900 dark:text-amber-200 font-medium italic">
+                      {result.suggestedCombination.warning}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

@@ -8,6 +8,14 @@ export interface LocalRecommendation {
   url: string;
   feedbackAmount: number;
   feedbackRate: string;
+  isBlackhole?: boolean;
+  suggestedCombination?: {
+    card: string;
+    payment: string;
+    rate: string;
+    amount: number;
+    warning: string;
+  };
 }
 
 interface LocalCandidate extends LocalRecommendation {
@@ -67,14 +75,16 @@ const cappedBonusReward = (amount: number, baseRate: number, bonusRate: number, 
   };
 };
 
-const buildZeroResult = (reason: string, details: string) => ({
+const buildZeroResult = (reason: string, details: string, suggested?: LocalRecommendation["suggestedCombination"]) => ({
   card: "無回饋",
   rate: "0.00%",
   reason,
   details,
   url: "https://www.feib.com.tw/",
   feedbackAmount: 0,
-  feedbackRate: "0.00%"
+  feedbackRate: "0.00%",
+  isBlackhole: true,
+  suggestedCombination: suggested
 });
 
 const matchesAny = (store: string, keywords: string[]) => matchesKeywords(store, keywords);
@@ -264,7 +274,18 @@ export function calculateReward(
 
   const hasMobilePay = matchesAny(store, exclusionList.paymentKeywords);
   if (matchesAny(store, exclusionList.convenienceKeywords) && !hasMobilePay) {
-    return buildZeroResult("直接刷卡無回饋，建議改用 LINE Pay / 全支付", "此為非一般消費項目");
+    const suggestedAmount = Math.round(amount * 0.05);
+    return buildZeroResult(
+      "🚫 實體刷卡無回饋。請綁定 LINE Pay 支付。",
+      "此為非一般消費項目",
+      {
+        card: "遠東快樂信用卡",
+        payment: "LINE Pay",
+        rate: "5%",
+        amount: suggestedAmount,
+        warning: "請確保已完成每月活動登錄（限 1 萬名）。"
+      }
+    );
   }
 
   return calculateBestLocalRecommendation(store, amount, options);
