@@ -1,0 +1,11 @@
+{
+  "governmentFees": ["繳稅", "所得稅", "牌照稅", "規費", "罰單", "罰鍰", "水電費", "政府稅"],
+  "utilities": ["水費", "電費", "瓦斯費", "水電費", "中華電信", "電信費"],
+  "tuition": ["學費", "學雜費", "學校"],
+  "telecom": ["電信費", "中華電信"],
+  "costcoKeywords": ["costco", "好市多"],
+  "costcoOnlineKeywords": ["線上", "線上購物", "online", "網購"],
+  "insuranceKeywords": ["保費", "保險"],
+  "convenienceKeywords": ["7-11", "全家", "萊爾富", "ok", "超商", "便利商店", "全聯"],
+  "paymentKeywords": ["line pay", "linepay", "全支付", "行動支付"]
+}

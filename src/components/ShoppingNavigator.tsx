@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import feibRules from "@/data/feib_rules.json";
-import { findLocalRecommendation } from "@/utils/localRules";
+import { calculateReward } from "@/utils/localRules";
 import { ModelRotator } from "@/utils/modelRotator";
 
 export default function ShoppingNavigator() {
@@ -14,7 +14,7 @@ export default function ShoppingNavigator() {
 
   const handleCalculate = async () => {
     // 1. 優先檢查本地規則 (不消耗 API Key)
-    const localRec = findLocalRecommendation(store, amount);
+    const localRec = calculateReward(store, amount);
     if (localRec) {
       const feedbackAmount =
         localRec.feedbackAmount ?? Math.round(amount * (parseFloat(localRec.rate) / 100));
