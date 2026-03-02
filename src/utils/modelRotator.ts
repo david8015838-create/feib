@@ -23,7 +23,7 @@ export class ModelRotator {
     this.apiKey = apiKey;
   }
 
-  async generateContent(prompt: string): Promise<string> {
+  async generateContent(prompt: string, systemInstruction?: string): Promise<string> {
     let lastError: any = null;
 
     // 嘗試所有候選模型
@@ -35,7 +35,10 @@ export class ModelRotator {
       try {
         console.log(`Trying model: ${modelName}`);
         const genAI = new GoogleGenerativeAI(this.apiKey);
-        const model = genAI.getGenerativeModel({ model: modelName });
+        const model = genAI.getGenerativeModel({ 
+          model: modelName,
+          systemInstruction: systemInstruction 
+        });
         
         const result = await model.generateContent(prompt);
         const response = result.response;
