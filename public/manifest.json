@@ -2,14 +2,15 @@
   "name": "遠東商銀 AI 智策助手",
   "short_name": "FEIB Pilot",
   "description": "您的專屬消費回饋導航與 Bankee 社群管家",
-  "start_url": "/",
+  "start_url": "/feib/",
+  "scope": "/feib/",
   "display": "standalone",
   "background_color": "#fcf8f8",
   "theme_color": "#cc0000",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/next.svg",
+      "src": "/feib/next.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"

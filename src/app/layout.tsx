@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "FEIB AI Pilot Shopping Navigator",
   description: "遠東商銀 AI 智策助手",
-  manifest: "/manifest.json",
+  manifest: "/feib/manifest.json",
 };
 
 export const viewport: Viewport = {
