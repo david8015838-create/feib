@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import qaKnowledge from "@/data/feib_qa.json";
-import { feibKnowledge2026 } from "@/data/feib_knowledge_2026";
+import { feibKnowledge2026v2 } from "@/data/feib_knowledge_2026_v2";
 import { ModelRotator } from "@/utils/modelRotator";
 
 export default function FeibQA() {
@@ -26,22 +26,30 @@ export default function FeibQA() {
       const rotator = new ModelRotator(apiKey);
 
       const systemInstruction = `
-        你現在是遠東商銀專業客服。針對非知識庫內的提問，請遵循以下原則：
-        
-        時間基準：現在是 2026 年，所有資訊必須符合 2026 年的金融常識。
-        
-        嚴謹性：若涉及回饋，必須強調『以官網當季公告為準』，並優先參考知識庫中的 Exclusion List (黑洞清單)。
-        
-        連動性：若使用者問到具體消費試算，請引導其點擊『智能刷卡導航』功能。
-        
-        過濾：拒絕回答政治、天氣、或其他與遠東商銀無關的問題。
+        你現在是遠東商銀 2026 數位客服 OWEN。請嚴格遵守以下數據源與規則進行回答：
+
+        1.  **數據真實性**：若資料庫 (RAG) 顯示通路為 0% (如稅款、超商直刷)，禁止根據 Gemini 的通用常識編造回饋趴數。
+
+        2.  **引導路徑**：針對超商 (7-11/全家)，必須提示：『實體刷卡無回饋，請改用遠東快樂卡綁定 LINE Pay 支付以獲得 5% 加碼（需每月登錄，限 1 萬名）。』
+
+        3.  **最新年份**：現在時間是 2026 年，所有關於『免年費條件』或『首刷禮』的回答必須標註『以當季官網公告為準』。
+
+        4.  **分期警告**：只要使用者問及『分期』，必須附帶提醒：『分期付款通常會取消原有的現金回饋。』
+
+        5.  **海外手續費**：當用戶問及 Netflix、Spotify 或任何國外消費時，必須在結尾自動加上：『提醒您，海外交易通常會產生 1.5% 的跨國交易手續費，建議試算時將此成本納入考量。』
+
+        6.  **視覺強調**：必須完整保留並渲染知識庫中的 Markdown 粗體與 Emoji (例如 ⚠️)。
+
+        7.  **範圍限制**：若問題完全與遠東商銀無關，請回覆：『抱歉，身為遠東商銀 AI 專員，我僅能為您提供本行信用卡與金融相關諮詢。』
+
+        8.  **資料來源**：回答結尾請加上「📎 資料來源：以官網公告為準」，並視情況附上相關官網連結（如 https://www.feib.com.tw/ 或 https://www.bankee.com.tw/）。
       `;
 
       const prompt = `
-        請優先根據以下「遠東商銀 2026 權益百科」以及「官方知識庫」回答使用者問題。
+        請優先根據以下「2026 遠東商銀信用卡：100% 真實數據手冊」以及「官方知識庫」回答使用者問題。
         
-        【優先調用知識庫 - 遠東商銀 2026 權益百科】：
-        ${feibKnowledge2026}
+        【優先調用知識庫 - 2026 遠東商銀信用卡：100% 真實數據手冊】：
+        ${feibKnowledge2026v2}
         
         【備用知識庫 - 官方 QA】：
         ${JSON.stringify(qaKnowledge)}
@@ -98,8 +106,34 @@ export default function FeibQA() {
           </div>
 
           {chatResponse && (
-            <div className="bg-primary/5 dark:bg-primary/10 rounded-xl p-4 text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">
-              {chatResponse}
+            <div className="space-y-3">
+              <div className="bg-primary/5 dark:bg-primary/10 rounded-xl p-4 text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">
+                {chatResponse}
+              </div>
+              <div className="bg-stone-50 dark:bg-black/20 rounded-xl p-3 border border-stone-200 dark:border-stone-700">
+                <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">
+                  📎 官方資料來源（以官網公告為準）
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { label: "遠東商銀官網", url: "https://www.feib.com.tw/" },
+                    { label: "Bankee 官網", url: "https://www.bankee.com.tw/" },
+                    { label: "信用卡登錄專區", url: "https://ecard.feib.com.tw/ActivityPromotion/index.do" },
+                    { label: "聯絡客服", url: "https://www.feib.com.tw/contactUs" },
+                  ].map(({ label, url }) => (
+                    <a
+                      key={url}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-medium bg-white dark:bg-black/20 text-primary border border-primary/20 hover:bg-primary/5 transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[11px]">open_in_new</span>
+                      {label}
+                    </a>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </div>

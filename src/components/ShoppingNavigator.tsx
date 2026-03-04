@@ -25,7 +25,9 @@ export default function ShoppingNavigator() {
         feedback_rate: feedbackRate,
         reason: localRec.reason,
         details: localRec.details,
-        official_url: localRec.url
+        official_url: localRec.url,
+        isBlackhole: localRec.isBlackhole,
+        suggestedCombination: localRec.suggestedCombination
       });
       setError("");
       return;
@@ -34,6 +36,8 @@ export default function ShoppingNavigator() {
     // 2. 若無本地規則，則使用 API
     const apiKey = localStorage.getItem("gemini_api_key");
     if (!apiKey) {
+      // 即使沒有 API Key，如果本地規則已經給出了 0.5% 或黑洞判定，就不用報錯
+      if (localRec) return; 
       setError("請先在設定中輸入 Gemini API Key");
       return;
     }
@@ -237,6 +241,31 @@ export default function ShoppingNavigator() {
                     驗證官網數據
                   </a>
                 )}
+              </div>
+
+              {/* 資料來源 */}
+              <div className="mt-3 pt-3 border-t border-stone-200 dark:border-stone-700">
+                <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">
+                  📎 官方資料來源（以官網公告為準）
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { label: "遠東商銀官網", url: "https://www.feib.com.tw/" },
+                    { label: "信用卡登錄專區", url: "https://ecard.feib.com.tw/ActivityPromotion/index.do" },
+                    { label: "Bankee 官網", url: "https://www.bankee.com.tw/" },
+                  ].map(({ label, url }) => (
+                    <a
+                      key={url}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-medium bg-white dark:bg-black/20 text-primary border border-primary/20 hover:bg-primary/5 transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[11px]">open_in_new</span>
+                      {label}
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
