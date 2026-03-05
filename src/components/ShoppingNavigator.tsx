@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import feibRules from "@/data/feib_rules.json";
-import { calculateReward } from "@/utils/localRules";
+import { calculateReward, type AmbiguousAlternative, type AlternativeCard } from "@/utils/localRules";
 import { ModelRotator } from "@/utils/modelRotator";
 
 export default function ShoppingNavigator() {
@@ -11,11 +11,36 @@ export default function ShoppingNavigator() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState("");
+  const [ambiguous, setAmbiguous] = useState<{ hint: string; alternatives: AmbiguousAlternative[] } | null>(null);
+  const [fallbackCard, setFallbackCard] = useState<AlternativeCard | null>(null);
+
+  const handleSelectAlternative = (alt: AmbiguousAlternative) => {
+    setAmbiguous(null);
+    setResult({
+      recommended_card: alt.card,
+      feedback_amount: alt.feedbackAmount,
+      feedback_rate: alt.feedbackRate,
+      reason: alt.reason,
+      details: alt.details,
+      official_url: alt.url,
+      isBlackhole: alt.isBlackhole ?? false
+    });
+  };
 
   const handleCalculate = async () => {
+    setAmbiguous(null);
+    setResult(null);
+    setFallbackCard(null);
+    setError("");
+
     // 1. 優先檢查本地規則 (不消耗 API Key)
     const localRec = calculateReward(store, amount);
     if (localRec) {
+      // 模糊情境：顯示選項讓使用者選擇
+      if (localRec.isAmbiguous && localRec.alternatives) {
+        setAmbiguous({ hint: localRec.ambiguousHint ?? "請選擇消費情境", alternatives: localRec.alternatives });
+        return;
+      }
       const feedbackAmount =
         localRec.feedbackAmount ?? Math.round(amount * (parseFloat(localRec.rate) / 100));
       const feedbackRate = localRec.feedbackRate ?? localRec.rate;
@@ -29,6 +54,8 @@ export default function ShoppingNavigator() {
         isBlackhole: localRec.isBlackhole,
         suggestedCombination: localRec.suggestedCombination
       });
+      // 若主推薦有門檻，儲存備選方案供 UI 顯示
+      setFallbackCard(localRec.alternativeIfNotEligible ?? null);
       setError("");
       return;
     }
@@ -166,6 +193,37 @@ export default function ShoppingNavigator() {
         {error && <p className="text-red-500 text-sm text-center bg-red-50 p-2 rounded">{error}</p>}
       </div>
 
+      {/* 模糊情境選擇卡片 */}
+      {ambiguous && (
+        <div className="rounded-2xl border border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 p-5 space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-amber-500">help</span>
+            <p className="font-bold text-amber-900 dark:text-amber-200 text-base">{ambiguous.hint}</p>
+          </div>
+          <p className="text-xs text-amber-700 dark:text-amber-400">偵測到模糊商家名稱，請選擇正確消費類型以獲得準確回饋建議：</p>
+          <div className="flex flex-col gap-3">
+            {ambiguous.alternatives.map((alt) => (
+              <button
+                key={alt.label}
+                onClick={() => handleSelectAlternative(alt)}
+                className="w-full text-left rounded-xl bg-white dark:bg-black/30 border border-amber-200 dark:border-amber-700 p-4 hover:bg-amber-100 dark:hover:bg-amber-800/30 active:scale-[0.98] transition-all shadow-sm"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-slate-800 dark:text-white text-sm">{alt.label}</span>
+                  <span className={`text-lg font-extrabold font-display ${alt.isBlackhole ? "text-slate-400" : "text-primary"}`}>
+                    {alt.rate}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{alt.reason}</p>
+                <div className="mt-1.5 inline-flex items-center gap-1 bg-primary/10 text-primary px-2 py-0.5 rounded text-[10px] font-bold">
+                  預估回饋 {alt.feedbackAmount} 元
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Results Card */}
       {result && (
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -271,6 +329,27 @@ export default function ShoppingNavigator() {
           </div>
 
           {/* 最佳路徑 / 建議支付組合 */}
+          {/* 備選方案：不符合門檻時的替代選擇 */}
+          {fallbackCard && (
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/40 p-4 animate-in fade-in duration-500 delay-100">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="material-symbols-outlined text-slate-500 text-[18px]">swap_horiz</span>
+                <p className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">若不符合上述門檻條件</p>
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-bold text-slate-700 dark:text-slate-300 text-sm">{fallbackCard.card}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{fallbackCard.reason}</p>
+                </div>
+                <div className="text-right flex-shrink-0 ml-4">
+                  <p className="text-lg font-extrabold text-slate-500 font-display">{fallbackCard.rate}</p>
+                  <p className="text-[10px] text-slate-400">{fallbackCard.feedbackAmount} 元</p>
+                </div>
+              </div>
+              <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-relaxed">{fallbackCard.details}</p>
+            </div>
+          )}
+
           {result.suggestedCombination && (
             <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10 rounded-2xl p-5 border border-amber-200 dark:border-amber-800 shadow-sm animate-in zoom-in-95 duration-500 delay-150">
               <div className="flex items-center gap-2 mb-4">

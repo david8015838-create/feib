@@ -1,11 +1,11 @@
 {
-  "governmentFees": ["繳稅", "所得稅", "牌照稅", "規費", "罰單", "罰鍰", "水電費", "政府稅"],
+  "governmentFees": ["繳稅", "所得稅", "牌照稅", "規費", "罰單", "罰鍰", "水電費", "政府稅", "etag儲值", "悠遊加值", "悠遊儲值", "智慧停車"],
   "utilities": ["水費", "電費", "瓦斯費", "水電費"],
-  "tuition": ["學費", "學雜費", "學校"],
+  "tuition": ["學費", "學雜費", "繳學費", "大學學費", "研究所學費"],
   "telecom": ["中華電信"],
   "costcoKeywords": ["costco", "好市多"],
-  "costcoOnlineKeywords": ["線上", "線上購物", "online", "網購"],
-  "insuranceKeywords": ["保費", "保險"],
-  "convenienceKeywords": ["7-11", "全家", "萊爾富", "ok", "超商", "便利商店"],
+  "insuranceKeywords": ["保費", "保險費", "人壽保險", "車險", "產險", "壽險", "醫療險", "意外險"],
+  "convenienceKeywords": ["7-11", "7eleven", "全家", "familymart", "萊爾富", "hilife", "ok超商", "ok便利", "okmart", "超商", "便利商店"],
+  "deliveryKeywords": ["foodpanda", "熊貓外送", "uber eats", "ubereats", "foodomo", "外送平台"],
   "paymentKeywords": ["line pay", "linepay", "全支付", "行動支付"]
 }
